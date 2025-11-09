@@ -44,6 +44,8 @@ public class Users {
 
     private String bio;
 
+//    private String location;
+
     private boolean req_user;
     //private boolean login_with_google;
 

@@ -8,7 +8,7 @@ import VerifiedIcon from "@mui/icons-material/Verified"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import PendingIcon from "@mui/icons-material/Pending"
 
-export const navigations=[
+export const navigationMenu=[
     {
         title:"Home",
         icon:<HomeIcon/>,

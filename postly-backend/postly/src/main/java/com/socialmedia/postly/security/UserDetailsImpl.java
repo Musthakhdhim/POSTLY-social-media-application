@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Concrete UserDetails implementation used by Spring Security.
+ *
+ * <p>Holds the information about an authenticated user retrieved from the domain
+ * Users entity, including id, username, email, password and granted authorities.</p>
+ */
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +33,15 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
+    /**
+     * Create a new UserDetailsImpl.
+     *
+     * @param id user id from the domain entity
+     * @param username login username
+     * @param email user email
+     * @param password encoded password
+     * @param authorities granted authorities for the user
+     */
     public UserDetailsImpl(Long id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -36,6 +51,12 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
+    /**
+     * Build a UserDetailsImpl from a domain Users entity.
+     *
+     * @param user domain Users entity
+     * @return populated UserDetailsImpl instance
+     */
     public static UserDetailsImpl build(Users user) {
 
         List<GrantedAuthority> authorities = user.getRoles().stream()
@@ -51,24 +72,49 @@ public class UserDetailsImpl implements UserDetails {
         );
     }
 
+    /**
+     * Return authorities granted to the user.
+     *
+     * @return collection of granted authorities
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
 
+    /**
+     * Returns the hashed password used to authenticate the user.
+     *
+     * @return password string
+     */
     @Override
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Get the domain identifier for the user.
+     *
+     * @return user id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Get the user's email address.
+     *
+     * @return user email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Get the username used to authenticate the user.
+     *
+     * @return username
+     */
     @Override
     public String getUsername() {
         return username;
@@ -94,6 +140,12 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
+    /**
+     * Equality is based on the user id.
+     *
+     * @param o other object
+     * @return true if both represent the same user id
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)

@@ -1,0 +1,14 @@
+com.socialmedia.postly
+com.socialmedia.postly.config
+com.socialmedia.postly.controller
+com.socialmedia.postly.dtos
+com.socialmedia.postly.entity
+com.socialmedia.postly.exception
+com.socialmedia.postly.filter
+com.socialmedia.postly.jwt
+com.socialmedia.postly.mapper
+com.socialmedia.postly.repository
+com.socialmedia.postly.response
+com.socialmedia.postly.security
+com.socialmedia.postly.service
+com.socialmedia.postly.util

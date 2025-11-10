@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller responsible for like-related operations such as liking a twit and listing likes.
+ *
+ * Root path is /api.
+ */
 @RestController
 @RequestMapping("/api")
 public class LikeController {
@@ -28,6 +33,15 @@ public class LikeController {
     @Autowired
     JwtUtils jwtUtils;
 
+    /**
+     * Like a twit on behalf of the authenticated user.
+     *
+     * The authenticated user is resolved from the JWT cookie in the request.
+     *
+     * @param twitId id of the twit to be liked
+     * @param request HttpServletRequest used to extract JWT cookie
+     * @return ResponseEntity with the created LikeDto and HTTP 201 status
+     */
     @PostMapping("/{twitId}/likes")
     public ResponseEntity<LikeDto> likeTwit(@PathVariable Long twitId, HttpServletRequest request){
         String jwt=jwtUtils.getJwtFromCookies(request);
@@ -41,6 +55,14 @@ public class LikeController {
     }
 
 
+    /**
+     * Get all likes for a given twit. The requester is resolved from the JWT cookie to
+     * help map likes relative to the requesting user (e.g., to mark whether they liked).
+     *
+     * @param twitId id of the twit whose likes should be retrieved
+     * @param request HttpServletRequest used to extract JWT cookie
+     * @return ResponseEntity with a list of LikeDto entries and HTTP 201 status
+     */
     @PostMapping("/twit/{twitId}")
     public ResponseEntity<List<LikeDto>> getAllLikes(@PathVariable Long twitId, HttpServletRequest request){
         String jwt=jwtUtils.getJwtFromCookies(request);

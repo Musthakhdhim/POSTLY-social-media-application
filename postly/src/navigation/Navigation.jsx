@@ -6,10 +6,17 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import store from "../store/Store";
+import { logout } from "../store/Auth/Action";
 
 export default function Navigation(){
 
-    const navigate=useNavigate()
+    const navigate=useNavigate()  
+    const {auth}=useSelector(store=>store)
+    const dispatch=useDispatch()
+
+
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -23,6 +30,7 @@ export default function Navigation(){
     const handleLogout=()=>{
         console.log("logout")
         handleClose()
+        dispatch(logout())
     }
     return (
         <div className="h-screen sticky top-0">
@@ -49,8 +57,8 @@ export default function Navigation(){
                 <div className="flex items-center space-x-3">
                     <Avatar src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png"/>
                     <div>
-                        <span>Musthakhdhim P</span>
-                        <span className="opacity-70">@Musthak12</span>
+                        <p>{auth.user?.username}</p>
+                        <span className="opacity-70">@{auth.user?.username.split(" ").join("_").toLowerCase()}</span>
                     </div>
                     <Button
                         id="basic-button"

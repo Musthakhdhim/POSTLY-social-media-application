@@ -1,13 +1,29 @@
 import './App.css';
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import Authentication from "./auth/Authentication";
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserProfile } from './store/Auth/Action';
+import { useEffect } from 'react';
 
 function App() {
+
+  const jwt=localStorage.getItem("jwt")
+  const {auth}=useSelector(store=>store)
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
+  
+  useEffect(()=>{
+    if(jwt){
+      dispatch(getUserProfile(jwt))
+      navigate("/")
+    }
+  },[auth.jwt])
+
   return (
     <div className="App">
       <Routes>
-        <Route path="/*" element={true?<HomePage/>:<Authentication/>}></Route>
+        <Route path="/*" element={auth.user?<HomePage/>:<Authentication/>}></Route>
       </Routes>
     </div>
   );

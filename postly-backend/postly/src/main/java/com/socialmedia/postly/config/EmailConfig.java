@@ -9,6 +9,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * Configuration for email delivery within the application.
+ *
+ * <p>Exposes a JavaMailSender configured for Gmail SMTP and a SendGrid client bean.
+ * Credentials and the SendGrid key are injected from application properties.</p>
+ */
 @Configuration
 public class EmailConfig {
 
@@ -23,6 +29,11 @@ public class EmailConfig {
     private String sendGridApiKey;
 
 
+    /**
+     * Configure a JavaMailSender using Gmail SMTP settings.
+     *
+     * @return configured JavaMailSender
+     */
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -41,6 +52,11 @@ public class EmailConfig {
     }
 
 
+    /**
+     * Create and expose a SendGrid client initialized with the configured API key.
+     *
+     * @return SendGrid client instance
+     */
     @Bean
     public SendGrid sendGrid() {
 //        System.out.println("SendGrid API Key: " + sendGridApiKey);

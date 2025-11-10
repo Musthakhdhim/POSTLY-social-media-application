@@ -14,6 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller that handles user profile related operations such as retrieving profiles,
+ * searching users, updating profile and following/unfollowing users.
+ *
+ * Endpoints are rooted at /api/users.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -24,6 +30,14 @@ public class UserController {
     @Autowired
     JwtUtils jwtUtils;
 
+    /**
+     * Get the profile of the currently authenticated user.
+     *
+     * The user is resolved using the JWT cookie from the request.
+     *
+     * @param request HttpServletRequest to extract the JWT cookie
+     * @return ResponseEntity containing the UserDto of the authenticated user
+     */
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getUserProfile(HttpServletRequest request){
 
@@ -36,6 +50,13 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED) ;
     }
 
+    /**
+     * Get the profile of a user by id.
+     *
+     * @param userId id of the user to retrieve
+     * @param request HttpServletRequest to extract the JWT cookie of the requester
+     * @return ResponseEntity containing the requested UserDto
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId, HttpServletRequest request){
 
@@ -51,6 +72,13 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED) ;
     }
 
+    /**
+     * Search users by a keyword.
+     *
+     * @param keyword search keyword
+     * @param request HttpServletRequest to extract the JWT cookie of the requester
+     * @return ResponseEntity containing a list of matching UserDto objects
+     */
     @GetMapping("/search")
     public ResponseEntity<List<UserDto>> searchUser(@RequestParam String keyword, HttpServletRequest request){
 
@@ -64,6 +92,13 @@ public class UserController {
         return new ResponseEntity<>(userDtos, HttpStatus.ACCEPTED) ;
     }
 
+    /**
+     * Update the currently authenticated user's profile using the provided Users object.
+     *
+     * @param req Users object containing updated fields
+     * @param request HttpServletRequest to extract the JWT cookie of the requester
+     * @return ResponseEntity containing the updated UserDto
+     */
     @PutMapping("/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody Users req, HttpServletRequest request){
 
@@ -78,6 +113,13 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED) ;
     }
 
+    /**
+     * Follow or unfollow a user identified by userId on behalf of the authenticated user.
+     *
+     * @param userId id of the user to follow/unfollow
+     * @param request HttpServletRequest to extract the JWT cookie of the requester
+     * @return ResponseEntity containing the updated UserDto for the target user
+     */
     @PutMapping("/{userId}/follow")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long userId, HttpServletRequest request){
 

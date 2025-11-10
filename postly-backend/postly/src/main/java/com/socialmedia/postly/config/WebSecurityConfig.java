@@ -21,13 +21,33 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+/**
+ * Spring Security configuration for the application.
+ *
+ * <p>Defines the security filter chain, authentication provider, password encoder,
+ * JWT authentication filter and a CORS filter. Security is configured to be stateless
+ * and to permit authentication endpoints while securing all other requests.</p>
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    /**
+     * Service responsible for loading user-specific data used during authentication.
+     */
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * Configure the SecurityFilterChain for HTTP security.
+     *
+     * <p>Disables CSRF and default CORS handling, sets the session policy to stateless,
+     * adds the JWT filter before UsernamePasswordAuthenticationFilter and configures
+     * request authorization rules.</p>
+     *
+     * @param http the HttpSecurity to configure
+     * @return the configured SecurityFilterChain
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
         try {
@@ -38,7 +58,6 @@ public class WebSecurityConfig {
                     .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/api/auth/**").permitAll()
-//                        .requestMatchers("/api/auth/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
                 );
 
@@ -48,11 +67,22 @@ public class WebSecurityConfig {
         }
     }
 
+    /**
+     * Create and expose the JwtAuthFilter bean.
+     *
+     * @return a new JwtAuthFilter instance
+     */
     @Bean
     public JwtAuthFilter jwtAuthFilter(){
         return new JwtAuthFilter();
     }
 
+    /**
+     * Expose the AuthenticationManager from the provided AuthenticationConfiguration.
+     *
+     * @param configuration source of the AuthenticationManager
+     * @return the AuthenticationManager
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration){
         try {
@@ -62,6 +92,12 @@ public class WebSecurityConfig {
         }
     }
 
+    /**
+     * Configure an AuthenticationProvider backed by a DaoAuthenticationProvider,
+     * using the application's UserDetailsService and a BCrypt password encoder.
+     *
+     * @return configured AuthenticationProvider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -69,14 +105,24 @@ public class WebSecurityConfig {
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
-
     }
 
+    /**
+     * BCrypt password encoder bean.
+     *
+     * @return PasswordEncoder instance using BCrypt
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configure a CorsFilter that allows requests from http://localhost:3000 and
+     * permits credentials, any header and any method.
+     *
+     * @return configured CorsFilter
+     */
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -89,4 +135,3 @@ public class WebSecurityConfig {
         return new CorsFilter(source);
     }
 }
-

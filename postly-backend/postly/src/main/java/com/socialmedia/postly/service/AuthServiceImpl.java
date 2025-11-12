@@ -124,7 +124,7 @@ public class AuthServiceImpl implements AuthService{
                 userDetails.getId(),
                 userDetails.getUsername(),
                 roles,
-                null // token is stored in cookie
+                jwtCookie.getValue() //before it was null ,for frontend== purpose token is stored in cookie
         );
 
         return new AuthenticationResult(jwtCookie, userInfo);

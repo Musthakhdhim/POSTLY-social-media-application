@@ -12,6 +12,8 @@ import java.util.List;
 
 public class TwitDtoMapper {
 
+    private static final String BASE_URL = "http://localhost:8085/images/";
+
     public static TwitDto toTwitDto(Twit twit, Users req){
         UserDto userDto = UserDtoMapper.toUserDto(twit.getUser());
 
@@ -28,7 +30,17 @@ public class TwitDtoMapper {
         twitDto.setTwitId(twit.getTwitId());
         twitDto.setContent(twit.getContent());
         twitDto.setCreatedAt(twit.getCreatedAt());
-        twitDto.setImage(twit.getImage());
+
+
+//        twitDto.setImage(twit.getImage());
+//        twitDto.setVideo(twit.getVideo());
+
+
+        twitDto.setImage(twit.getImage() != null ? BASE_URL + twit.getImage() : null);
+        twitDto.setVideo(twit.getVideo() != null ? BASE_URL + twit.getVideo() : null);
+
+
+
         twitDto.setTotalLikes(twit.getLikes().size());
         twitDto.setTotalReplies(twit.getReplyTwits().size());
         twitDto.setTotalRetweets(twit.getRetwitUser().size());
@@ -39,7 +51,7 @@ public class TwitDtoMapper {
         twitDto.setRetwitUsersId(retwitUserId);
         twitDto.setReplyTwits(toTwitDtos(twit.getReplyTwits(), req));
 
-        twitDto.setVideo(twit.getVideo());
+
 
         return twitDto;
 
@@ -73,7 +85,17 @@ public class TwitDtoMapper {
         twitDto.setTwitId(twit.getTwitId());
         twitDto.setContent(twit.getContent());
         twitDto.setCreatedAt(twit.getCreatedAt());
-        twitDto.setImage(twit.getImage());
+
+//        twitDto.setImage(twit.getImage());
+//        twitDto.setVideo(twit.getVideo());
+
+
+        twitDto.setImage(twit.getImage() != null ? BASE_URL + twit.getImage() : null);
+        twitDto.setVideo(twit.getVideo() != null ? BASE_URL + twit.getVideo() : null);
+
+
+
+
         twitDto.setTotalLikes(twit.getLikes().size());
         twitDto.setTotalReplies(twit.getReplyTwits().size());
         twitDto.setTotalRetweets(twit.getRetwitUser().size());
@@ -83,7 +105,7 @@ public class TwitDtoMapper {
 
         twitDto.setRetwitUsersId(retwitUserId);
 
-        twitDto.setVideo(twit.getVideo());
+
 
         return twitDto;
     }

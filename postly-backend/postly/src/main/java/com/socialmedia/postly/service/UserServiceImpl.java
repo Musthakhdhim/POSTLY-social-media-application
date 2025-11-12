@@ -5,8 +5,11 @@ import com.socialmedia.postly.exception.UsersNotFoundException;
 import com.socialmedia.postly.jwt.JwtUtils;
 import com.socialmedia.postly.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -17,6 +20,12 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    FileService fileService;
+
+    @Value("${project.image}")
+    private String path;
 
     @Override
     public Users findUserById(Long userId) throws UsersNotFoundException {
@@ -34,7 +43,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Users updateUser(Long userId, Users req) throws UsersNotFoundException {
+    public Users updateUser(Long userId, Users req, MultipartFile image, MultipartFile backgroundImage) throws UsersNotFoundException, IOException {
         Users user = findUserById(userId);
 
         if(req.getUsername() != null)
@@ -46,11 +55,21 @@ public class UserServiceImpl implements UserService{
         if(req.getBio() != null)
             user.setBio(req.getBio());
 
-        if(req.getImage() != null)
-            user.setImage(req.getImage());
+//        if(req.getImage() != null)
+//            user.setImage(req.getImage());
+//
+//        if(req.getBackgroundImage() != null)
+//            user.setBackgroundImage(req.getBackgroundImage());
 
-        if(req.getBackgroundImage() != null)
-            user.setBackgroundImage(req.getBackgroundImage());
+        if(image!=null && !image.isEmpty()){
+            String fileName= fileService.uploadImage(path, image);
+            user.setImage(fileName);
+        }
+
+        if(backgroundImage!=null && !backgroundImage.isEmpty()){
+            String fileName= fileService.uploadImage(path, backgroundImage);
+            user.setBackgroundImage(fileName);
+        }
 
         if(req.getDOB() != null)
             user.setDOB(req.getDOB());
@@ -61,6 +80,36 @@ public class UserServiceImpl implements UserService{
 
         return usersRepository.save(user);
     }
+
+
+//    @Override
+//    public Users updateUser(Long userId, Users req) throws UsersNotFoundException {
+//        Users user = findUserById(userId);
+//
+//        if(req.getUsername() != null)
+//            user.setUsername(req.getUsername());
+//
+//        if(req.getFullName() != null)
+//            user.setFullName(req.getFullName());
+//
+//        if(req.getBio() != null)
+//            user.setBio(req.getBio());
+//
+//        if(req.getImage() != null)
+//            user.setImage(req.getImage());
+//
+//        if(req.getBackgroundImage() != null)
+//            user.setBackgroundImage(req.getBackgroundImage());
+//
+//        if(req.getDOB() != null)
+//            user.setDOB(req.getDOB());
+//
+//        if(req.getPhoneNumber()!=null){
+//            user.setPhoneNumber(req.getPhoneNumber());
+//        }
+//
+//        return usersRepository.save(user);
+//    }
 
     @Override
     public Users followUser(Long userId, Users user) throws UsersNotFoundException {
@@ -78,6 +127,12 @@ public class UserServiceImpl implements UserService{
         usersRepository.save(followToUser);
         usersRepository.save(user);
         return followToUser;
+    }
+
+    @Override
+    public Users findUserByUsername(String username){
+        return usersRepository.findByUsername(username).orElseThrow(()->
+                new UsersNotFoundException("user not found with username: "+username));
     }
 
     @Override

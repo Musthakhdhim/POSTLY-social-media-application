@@ -1,11 +1,14 @@
 import ImageIcon from "@mui/icons-material/Image";
 import { Avatar, Button } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import PostCard from "./PostCard";
+import { useDispatch, useSelector } from "react-redux";
+import { createTweets, getAllTweets } from "../store/Post/Action";
+import store from "../store/Store";
 
 const validationSchema = Yup.object().shape({
   content: Yup.string().required("Post is required"),
@@ -15,9 +18,42 @@ export default function Middle() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const { twit } = useSelector(store => store)
+  console.log("twit", twit)
+
+  const dispatch = useDispatch()
+
+  // const handleSubmit = (values) => {
+  //   console.log("values ", values);
+  // };
+
+
   const handleSubmit = (values) => {
-    console.log("values ", values);
+    const formData = new FormData();
+
+    // Append JSON as Blob for backend @RequestPart
+    const jsonBlob = new Blob([JSON.stringify({ content: values.content })], {
+      type: "application/json",
+    });
+    formData.append("req", jsonBlob);
+
+    // Append image if selected
+    if (values.image) {
+      formData.append("image", values.image);
+    }
+
+    // Dispatch Redux action
+    dispatch(createTweets(formData));
+
+    // Reset form
+    formik.resetForm();
+    setSelectedImage(null);
   };
+
+
+  useEffect(() => {
+    dispatch(getAllTweets())
+  }, [twit.like, twit.retwit, twit.totalReplies])
 
   const formik = useFormik({
     initialValues: {
@@ -39,19 +75,19 @@ export default function Middle() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <section>
-        <h1 className="py-5 text-xl font-bold opacity-90 text-left">Home</h1>
-      </section>
+      {/* <section>
+        <h1 className="pb-5 text-xl font-bold opacity-90 text-left">Home</h1>
+      </section> */}
 
       {/* Post Form */}
-      <section className="pb-6 border-b border-gray-300">
+      <section className="pb-4 pt-5 border-b border-gray-300">
         <div className="flex space-x-5">
           <Avatar
             alt="username"
             src=""
-         />
+          />
           <div className="w-full">
             <form onSubmit={formik.handleSubmit} className="space-y-4">
               {/* Input Field */}
@@ -120,8 +156,8 @@ export default function Middle() {
 
       {/* Posts List */}
       <section className="space-y-4">
-        {[1, 1, 1, 1, 1].map((item, index) => (
-          <PostCard key={index} />
+        {twit.twits.map((item, index) => (
+          <PostCard item={item} key={index} />
         ))}
       </section>
     </div>

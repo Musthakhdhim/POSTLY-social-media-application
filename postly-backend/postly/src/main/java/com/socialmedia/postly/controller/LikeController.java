@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("http://localhost:3000")
 public class LikeController {
 
     @Autowired
@@ -44,8 +46,11 @@ public class LikeController {
      */
     @PostMapping("/{twitId}/likes")
     public ResponseEntity<LikeDto> likeTwit(@PathVariable Long twitId, HttpServletRequest request){
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         Likes likes = likeService.likeTwit(twitId,user );
 

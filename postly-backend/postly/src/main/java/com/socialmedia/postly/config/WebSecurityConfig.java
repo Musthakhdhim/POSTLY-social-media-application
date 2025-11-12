@@ -52,12 +52,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
         try {
             http.csrf(AbstractHttpConfigurer::disable)
-                    .cors(AbstractHttpConfigurer::disable)
+//                    .cors(AbstractHttpConfigurer::disable)
+                    .cors(cors -> {})
                     .sessionManagement((session)->
                             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
                     .anyRequest().authenticated()
                 );
 

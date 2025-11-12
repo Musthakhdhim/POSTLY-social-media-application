@@ -16,6 +16,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,6 +36,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/twits")
+@CrossOrigin("http://localhost:3000")
 public class TwitController {
 
     /**
@@ -73,8 +75,11 @@ public class TwitController {
                                               @RequestPart(required = false) MultipartFile video,
                                               HttpServletRequest request) throws IOException {
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         Twit twit=twitService.createTwit(req, image, video, user);
 
@@ -90,20 +95,20 @@ public class TwitController {
      * @return a ResponseEntity with the image resource and appropriate content type, or {@code 404 NOT FOUND}
      * @throws IOException if probing the file's content type or reading the file fails
      */
-    @GetMapping(value="/image/{filename}" , produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) throws IOException {
-        Path imagePath = Paths.get("images", filename);
-
-        if (!Files.exists(imagePath)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Resource resource = new UrlResource(imagePath.toUri());
-        String contentType = Files.probeContentType(imagePath);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(resource);
-    }
+//    @GetMapping(value="/image/{filename}" , produces = MediaType.IMAGE_JPEG_VALUE)
+//    public ResponseEntity<Resource> getImage(@PathVariable String filename) throws IOException {
+//        Path imagePath = Paths.get("images", filename);
+//
+//        if (!Files.exists(imagePath)) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        Resource resource = new UrlResource(imagePath.toUri());
+//        String contentType = Files.probeContentType(imagePath);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .body(resource);
+//    }
 
     /**
      * Create a reply to an existing twit. Accepts a TwitReplyRequest and an optional image.
@@ -116,11 +121,13 @@ public class TwitController {
      */
     @PostMapping(value = "/reply", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<TwitDto> replyTwit(@RequestPart TwitReplyRequest req,
-                                             @RequestPart MultipartFile image,
+                                             @RequestPart(required = false) MultipartFile image,
                                              HttpServletRequest request) throws IOException {
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         Twit twit=twitService.createReply(req, image, user);
 
@@ -139,8 +146,11 @@ public class TwitController {
     @PutMapping("/{twitId}/retweet")
     public ResponseEntity<TwitDto> reTwit(@PathVariable Long twitId, HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         Twit twit=twitService.retwit(twitId, user);
 
@@ -159,8 +169,11 @@ public class TwitController {
     @GetMapping("/{twitId}")
     public ResponseEntity<TwitDto> findTwitById(@PathVariable Long twitId, HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         Twit twit=twitService.findById(twitId);
 
@@ -179,8 +192,8 @@ public class TwitController {
     @DeleteMapping("/{twitId}")
     public ResponseEntity<ApiResponse> deleteTwit(@PathVariable Long twitId, HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         twitService.deleteTwitById(twitId, user.getUserId());
 
@@ -198,8 +211,11 @@ public class TwitController {
     @GetMapping("/")
     public ResponseEntity<List<TwitDto>> getAllTwits(HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         List<Twit> twit=twitService.findAllTwit();
 
@@ -219,8 +235,11 @@ public class TwitController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<TwitDto>> getUsersAllTwits(@PathVariable Long userId,HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         List<Twit> twit=twitService.getUserTwit(user);
 
@@ -239,8 +258,11 @@ public class TwitController {
     @GetMapping("/user/{userId}/likes")
     public ResponseEntity<List<TwitDto>> findTwitByLikesByUser(@PathVariable Long userId,HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
 
         List<Twit> twit=twitService.findByLikesContainsUser(user);
 

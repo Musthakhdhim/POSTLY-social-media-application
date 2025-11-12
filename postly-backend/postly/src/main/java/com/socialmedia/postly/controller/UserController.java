@@ -10,8 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -41,8 +45,12 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getUserProfile(HttpServletRequest request){
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users user = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users user = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user=userService.findUserByUsername(username);
+
 
         UserDto userDto= UserDtoMapper.toUserDto(user);
         userDto.setReq_user(true);
@@ -100,13 +108,19 @@ public class UserController {
      * @return ResponseEntity containing the updated UserDto
      */
     @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUser(@RequestBody Users req, HttpServletRequest request){
+    public ResponseEntity<UserDto> updateUser(@RequestPart Users req,
+                                              @RequestPart(required = false) MultipartFile image,
+                                              @RequestPart(required = false) MultipartFile backgroundImage,
+                                              HttpServletRequest request) throws IOException {
 
-        String jwt=jwtUtils.getJwtFromCookies(request);
-        Users reqUser = userService.findUserProfileByJwt(jwt);
+//        String jwt=jwtUtils.getJwtFromCookies(request);
+//        Users reqUser = userService.findUserProfileByJwt(jwt);
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users reqUser=userService.findUserByUsername(username);
 
         System.out.println(req.getDOB());
-        Users user = userService.updateUser(reqUser.getUserId(), req);
+        Users user = userService.updateUser(reqUser.getUserId(), req, image, backgroundImage);
 
         UserDto userDto= UserDtoMapper.toUserDto(user);
 

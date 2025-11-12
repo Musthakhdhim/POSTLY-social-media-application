@@ -10,7 +10,6 @@ import PostCard from "../HomeSection/PostCard"
 import ProfileModel from "../models/ProfileModel"
 
 
-
 export default function Profile() {
 
     const [tabValue, setTabValue]=useState("1")
@@ -24,7 +23,6 @@ export default function Profile() {
         navigate(-1)
     }
 
-    
 
     const handleFollowUser = () => {
         console.log("handle follow user")
@@ -73,7 +71,7 @@ export default function Profile() {
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/2048px-Twitter_Verified_Badge.svg.png" />
                         )}
                     </div>
-                    <h1 className="text-gray-500 text-left">@Musthak</h1>
+                    <h1 className="text-gray-500 text-lg text-left">@Musthak</h1>
                 </div>
                 <div className="mt-2 space-y-3 text-left">
                     <p >Hello good to meet you here</p>

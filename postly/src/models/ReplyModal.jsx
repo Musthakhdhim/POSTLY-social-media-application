@@ -10,6 +10,8 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import ImageIcon from "@mui/icons-material/Image";
 import { useFormik } from 'formik';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createTweetReply, findTwitsById } from '../store/Post/Action';
 
 
 const style = {
@@ -26,20 +28,30 @@ const style = {
     borderRadius: 4
 };
 
-export default function ReplyModal({handleClose, open}) {
+export default function ReplyModal({handleClose, open, item}) {
     const navigate = useNavigate()
     const [uploadingImage, setUploadingImage] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const dispatch=useDispatch()
 
-    const handleSubmit = (values) => {
-        console.log("handle submit", values)
-    }
+    // const handleSubmit = (values) => {
+    //     dispatch(createTweetReply(values))
+    //     console.log("handle submit", values)
+    // }
+
+    
+    const handleSubmit = async (values) => {
+        await dispatch(createTweetReply(values));
+        dispatch(findTwitsById(item.twitId)); // refresh post details
+        handleClose();
+    };
+
 
     const formik = useFormik({
         initialValues: {
             content: "",
             image: "",
-            twitId: 4
+            twitId: item?.twitId
         },
         onSubmit: handleSubmit
     })

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDtoMapper {
+    private static final String BASE_URL = "http://localhost:8085/images/";
+
 
     public static UserDto toUserDto(com.socialmedia.postly.entity.Users user) {
         if (user == null) {
@@ -18,10 +20,17 @@ public class UserDtoMapper {
         userDto.setUserId(user.getUserId());
         userDto.setFullName(user.getFullName());
         userDto.setEmail(user.getEmail());
-        userDto.setImage(user.getImage());
+
+//        userDto.setImage(user.getImage());
+//        userDto.setBackgroundImage(user.getBackgroundImage());
+
+        userDto.setImage(user.getImage() != null ? BASE_URL + user.getImage() : null);
+        userDto.setBackgroundImage(user.getBackgroundImage() != null ? BASE_URL + user.getBackgroundImage() : null);
+
         userDto.setDOB(user.getDOB());
+        userDto.setUsername(user.getUsername());
         userDto.setPhoneNumber(user.getPhoneNumber());
-        userDto.setBackgroundImage(user.getBackgroundImage());
+
         userDto.setBio(user.getBio());
         userDto.setFollowers(toUserDtos(user.getFollowers()));
         userDto.setFollowing(toUserDtos(user.getFollowing()));
@@ -43,6 +52,7 @@ public class UserDtoMapper {
             userDto.setEmail(user.getEmail());
             userDto.setFullName(user.getFullName());
             userDto.setImage(user.getImage());
+            userDto.setUsername(user.getUsername());
 
             userDtos.add(userDto);
 

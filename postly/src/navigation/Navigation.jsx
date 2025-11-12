@@ -40,22 +40,44 @@ export default function Navigation() {
                 <div className="py-5">
                 </div> */}
                 <div className="space-y-4">
-                    {navigationMenu.map((item)=>
+                    {/* {navigationMenu.map((item)=>
                         <div className="cursor-pointer flex space-x-3 item-center"
-                        onClick={()=> item.title==="Profile"?navigate(`/profile/${5}`):navigate(item.path)}>
+                        onClick={()=> item.title==="Profile"?navigate(`/profile/${auth.user?.userId}`):navigate(item.path)}>
                             {item.icon}
                             <p className="text-s">{item.title}</p>
                         </div>
-                    )}
+                    )} */}
+                    {navigationMenu.map((item) => (
+                        <div
+                            className="cursor-pointer flex space-x-3 item-center"
+                            onClick={() => {
+                                if (item.title === "Profile") {
+                                    if (auth.user?.userId) {
+                                        navigate(`/profile/${auth.user.userId}`);
+                                    } else {
+                                        console.warn("User not loaded yet");
+                                    }
+                                } else {
+                                    navigate(item.path);
+                                }
+                            }}
+                        >
+                            {item.icon}
+                            <p className="text-s">{item.title}</p>
+                        </div>
+                    ))}
                 </div>
                 <div className="py-7">
-                    <Button variant="contained" sx={{width:"100%", borderRadius:"29px", color:"white", py:"15px", bgcolor:"Green"}}>Post</Button>
+                    <Button variant="contained" sx={{ width: "100%", borderRadius: "29px", color: "white", py: "15px", bgcolor: "Green" }}>Post</Button>
                 </div>
             </div>
 
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                    <Avatar src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png"/>
+                    <Avatar
+                        // src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png"
+                        src={auth.user?.image}
+                    />
                     <div>
                         <p>{auth.user?.username}</p>
                         <span className="opacity-70">@{auth.user?.username}</span>
@@ -67,7 +89,7 @@ export default function Navigation() {
                         aria-expanded={open ? 'true' : undefined}
                         onClick={handleClick}
                     >
-                      <MoreHorizIcon/>
+                        <MoreHorizIcon />
 
                     </Button>
                     <Menu
@@ -76,9 +98,9 @@ export default function Navigation() {
                         open={open}
                         onClose={handleClose}
                         slotProps={{
-                        list: {
-                            'aria-labelledby': 'basic-button',
-                        },
+                            list: {
+                                'aria-labelledby': 'basic-button',
+                            },
                         }}
                     >
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -88,194 +110,8 @@ export default function Navigation() {
             </div>
         </div>
 
-        
+
     )
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// <div className="h-screen flex flex-col justify-between bg-white border-r border-gray-200">
-        //     {/* Top Section */}
-        //     <div className="flex flex-col overflow-y-auto px-4 py-5">
-        //         {/* Logo */}
-        //         <div className="mb-6">
-        //             <h1 className="text-2xl font-bold text-green-600">Postly</h1>
-        //         </div>
-
-        //         {/* Navigation Menu */}
-        //         <nav className="space-y-4">
-        //             {navigationMenu.map((item) => (
-        //                 <div
-        //                     key={item.title}
-        //                     className="cursor-pointer flex items-center space-x-3 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
-        //                     onClick={() =>
-        //                         item.title === "Profile"
-        //                             ? navigate(`/profile/${auth.user?.id}`)
-        //                             : navigate(item.path)
-        //                     }
-        //                 >
-        //                     <span className="text-xl">{item.icon}</span>
-        //                     <p className="text-base font-medium">{item.title}</p>
-        //                 </div>
-        //             ))}
-        //         </nav>
-
-        //         {/* Post Button */}
-        //         <div className="mt-6">
-        //             <Button
-        //                 variant="contained"
-        //                 sx={{
-        //                     width: "100%",
-        //                     borderRadius: "30px",
-        //                     color: "white",
-        //                     py: "12px",
-        //                     bgcolor: "green",
-        //                     fontWeight: "bold",
-        //                 }}
-        //             >
-        //                 Post
-        //             </Button>
-        //         </div>
-        //     </div>
-
-        //     {/* Bottom Profile Section */}
-        //     <div className="border-t border-gray-200 px-4 py-3 flex items-center justify-between">
-        //         <div className="flex items-center space-x-3">
-        //             <Avatar
-        //                 src={auth.user?.image || "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png"}
-        //                 sx={{ width: 40, height: 40 }}
-        //             />
-        //             <div>
-        //                 <p className="font-semibold">{auth.user?.username}</p>
-        //                 <span className="text-gray-500 text-sm">@{auth.user?.username}</span>
-        //             </div>
-        //         </div>
-        //         <Button
-        //             id="basic-button"
-        //             aria-controls={open ? "basic-menu" : undefined}
-        //             aria-haspopup="true"
-        //             aria-expanded={open ? "true" : undefined}
-        //             onClick={handleClick}
-        //         >
-        //             <MoreHorizIcon />
-        //         </Button>
-        //         <Menu
-        //             id="basic-menu"
-        //             anchorEl={anchorEl}
-        //             open={open}
-        //             onClose={handleClose}
-        //             slotProps={{
-        //                 list: {
-        //                     "aria-labelledby": "basic-button",
-        //                 },
-        //             }}
-        //         >
-        //             <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        //         </Menu>
-        //     </div>
-        // </div>
-
-
-        // <div className="h-screen flex flex-col justify-between bg-white border-r border-gray-200 px-4 py-5">
-        //     {/* Top Section */}
-        //     <div>
-        //         {/* Logo */}
-        //         <div className="mb-6">
-        //             <h1 className="text-2xl font-bold text-green-600">Postly</h1>
-        //         </div>
-
-        //         {/* Navigation Menu */}
-        //         <nav className="space-y-4">
-        //             {navigationMenu.map((item) => (
-        //                 <div
-        //                     key={item.title}
-        //                     className="cursor-pointer flex items-center space-x-3 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
-        //                     onClick={() =>
-        //                         item.title === "Profile"
-        //                             ? navigate(`/profile/${auth.user?.id}`)
-        //                             : navigate(item.path)
-        //                     }
-        //                 >
-        //                     <span className="text-xl">{item.icon}</span>
-        //                     <p className="text-base font-medium">{item.title}</p>
-        //                 </div>
-        //             ))}
-        //         </nav>
-
-        //         {/* Post Button */}
-        //         <div className="mt-6">
-        //             <Button
-        //                 variant="contained"
-        //                 sx={{
-        //                     width: "100%",
-        //                     borderRadius: "30px",
-        //                     color: "white",
-        //                     py: "12px",
-        //                     bgcolor: "green",
-        //                     fontWeight: "bold",
-        //                 }}
-        //             >
-        //                 Post
-        //             </Button>
-        //         </div>
-        //     </div>
-
-        //     {/* Bottom Profile Section */}
-        //     <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-        //         <div className="flex items-center space-x-3">
-        //             <Avatar
-        //                 src={auth.user?.image || "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png"}
-        //                 sx={{ width: 40, height: 40 }}
-        //             />
-        //             <div>
-        //                 <p className="font-semibold">{auth.user?.username}</p>
-        //                 <span className="text-gray-500 text-sm">@{auth.user?.username}</span>
-        //             </div>
-        //         </div>
-        //         <Button
-        //             id="basic-button"
-        //             aria-controls={open ? "basic-menu" : undefined}
-        //             aria-haspopup="true"
-        //             aria-expanded={open ? "true" : undefined}
-        //             onClick={handleClick}
-        //         >
-        //             <MoreHorizIcon />
-        //         </Button>
-        //         <Menu
-        //             id="basic-menu"
-        //             anchorEl={anchorEl}
-        //             open={open}
-        //             onClose={handleClose}
-        //             slotProps={{
-        //                 list: {
-        //                     "aria-labelledby": "basic-button",
-        //                 },
-        //             }}
-        //         >
-        //             <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        //         </Menu>
-        //     </div>
-        // </div>

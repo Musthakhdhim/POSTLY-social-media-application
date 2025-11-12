@@ -19,6 +19,8 @@ export default function Middle() {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const { twit } = useSelector(store => store)
+    const { auth } = useSelector(store => store)
+
   console.log("twit", twit)
 
   const dispatch = useDispatch()
@@ -86,7 +88,7 @@ export default function Middle() {
         <div className="flex space-x-5">
           <Avatar
             alt="username"
-            src=""
+            src={auth.user?.image}
           />
           <div className="w-full">
             <form onSubmit={formik.handleSubmit} className="space-y-4">

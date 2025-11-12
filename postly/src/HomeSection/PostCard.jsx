@@ -56,7 +56,10 @@ export default function PostCard({item}) {
             </div> */}
 
             <div className="flex space-x-5">
-                <Avatar onClick={() => navigate(`/profile/${item?.user.userId}`)} className="cursor-pointer" alt="username" src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png" />
+                <Avatar onClick={() => navigate(`/profile/${item?.user.userId}`)} className="cursor-pointer" alt="username" 
+                // src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_960_720.png"
+                src={item?.user.image} 
+                />
 
                 <div className="w-full">
                     <div className="flex justify-between items-center">

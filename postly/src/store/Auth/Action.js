@@ -45,6 +45,7 @@ export const loginUser = (loginData) => async (dispatch) => {
       }
     });
 
+    await dispatch(getUserProfile());
     return data; // ✅ Important for await in SigninForm
   } catch (error) {
     dispatch({ type: LOGIN_USER_FAILURE, payload: error.message });
@@ -92,30 +93,36 @@ export const findUserById = (userId) => async (dispatch) => {
 };
 
 
-// export const updateUserProfile = (reqData) => async (dispatch) => {
-//   try {
-    
-//     const { data } = await api.put(`/users/update`, reqData);
-//     console.log("update user", data);
-//     dispatch({ type: UPDATE_USER_SUCCESS, payload: data });
-//     return data;
-//   } catch (error) {
-//     dispatch({ type: UPDATE_USER_FAILURE, payload: error.message });
-//     console.log("update user" ,error)
-//   }
-// };
+
 
 export const updateUserProfile = (reqData) => async (dispatch) => {
   try {
     const formData = new FormData();
-    Object.keys(reqData).forEach((key) => {
-      if (reqData[key]) {
-        formData.append(key, reqData[key]);
-      }
-    });
+
+    // ✅ Add JSON part for 'req'
+    const userJson = {
+      fullName: reqData.fullName,
+      bio: reqData.bio,
+      location: reqData.location,
+      DOB: reqData.DOB,
+      phoneNumber: reqData.phoneNumber
+    };
+
+    formData.append("req", new Blob([JSON.stringify(userJson)], { type: "application/json" }));
+
+    // ✅ Add files if present
+    if (reqData.image) {
+      formData.append("image", reqData.image);
+    }
+    if (reqData.backgroundImage) {
+      formData.append("backgroundImage", reqData.backgroundImage);
+    }
 
     const { data } = await api.put(`/users/update`, formData, {
-      headers: { "Content-Type": "multipart/form-data" }
+      headers: {
+        "Content-Type": "multipart/form-data"
+        // ✅ Authorization header is already handled by interceptor
+      }
     });
 
     dispatch({ type: UPDATE_USER_SUCCESS, payload: data });
@@ -139,203 +146,3 @@ export const followUserAction = (userId) => async (dispatch) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const registerUser = (registerData) => async (dispatch) => {
-//   dispatch({ type: REGISTER_USER_REQUEST });
-//   try {
-//     const { data } = await axios.post(`${API_BASED_URL}/auth/signup`, registerData);
-//     dispatch({ type: REGISTER_USER_SUCCESS, payload: data });
-//     return data; // ✅ Return so `await` works
-//   } catch (error) {
-//     dispatch({ type: REGISTER_USER_FAILURE, payload: error.message });
-//     throw error; // ✅ Throw so catch works
-//   }
-// };
-
-
-
-
-// export const loginUser = (loginData) => async (dispatch) => {
-//   dispatch({ type: LOGIN_USER_REQUEST });
-//   try {
-//     const { data } = await axios.post(`${API_BASED_URL}/auth/login`, loginData);
-//     console.log("hello from login",data);
-//     console.log("token is: ",data.token)
-
-
-//     if (data.token) {
-//       localStorage.setItem("jwt", data.token);
-      
-//     }
-
-//     dispatch({
-//       type: LOGIN_USER_SUCCESS,
-//       payload: {
-//         user: {
-//           id: data.response.id,
-//           username: data.response.username,
-//           roles: data.response.roles
-//         },
-//         token: data.response.token
-//       }
-//     });
-//     console.log(data)
-//     return data
-//   } catch (error) {
-//     dispatch({ type: LOGIN_USER_FAILURE, payload: error.message });
-//   }
-// };
-
-// export const getUserProfile = () => async (dispatch) => {
-//   dispatch({ type: GET_USER_PROFILE_REQUEST });
-//   try {
-//     const jwt = localStorage.getItem("jwt");
-//     const { data } = await axios.get(`${API_BASED_URL}/users/profile`, {
-//       headers: {
-//         Authorization: `Bearer ${jwt}`
-//       }
-//     });
-//     dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: data });
-//   } catch (error) {
-//     dispatch({ type: GET_USER_PROFILE_FAILURE, payload: error.message });
-//   }
-// };
-
-
-
-
-
-// export const logout = () => async (dispatch) => {
-//   localStorage.removeItem("jwt");
-//   dispatch({ type: LOGOUT });
-// };
-
-
-
-// export const logout=()=>async(dispatch)=>{
-    
-//         localStorage.removeItem("jwt")
-//         dispatch({
-//             type:LOGOUT,
-//             payload:null
-//         })
-
-// }
-
-
-
-
-
-
-// export const registerUser=(registerData)=>async(dispatch)=>{
-//     try {
-//         const {data}=await axios.post(`${API_BASED_URL}/auth/signup`,registerData)
-//         console.log("registered user",registerData)
-
-//         dispatch({
-//             type:REGISTER_USER_SUCCESS,
-//             payload:data
-//         })
-//     } catch (error) {
-//         console.log("error ",error)
-//         dispatch({type:REGISTER_USER_FAILURE, payload:error.message})
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const loginUser=(loginData)=>async(dispatch)=>{
-//     try {
-//         const {data}=await axios.post(`${API_BASED_URL}/auth/login`,loginData)
-//         console.log("logged in user",loginData)
-
-//         if(data.jwt){
-//             localStorage.setItem("jwt", data.jwt)
-
-//         }
-//         dispatch({
-//             type:LOGIN_USER_SUCCESS,
-//             payload:data.jwt
-//         })
-//     } catch (error) {
-//         console.log("error ",error)
-//         dispatch({type:LOGIN_USER_FAILURE, payload:error.message})
-//     }
-// }
-
-
-
-
-// export const getUserProfile=(jwt)=>async(dispatch)=>{
-//     try {
-//         const {data}=await axios.get(`${API_BASED_URL}/users/profile`,{
-//             headers:{
-//                 "Authorization":`Bearer ${jwt}`
-//             }
-//         })
-        
-//         dispatch({
-//             type:GET_USER_PROFILE_SUCCESS,
-//             payload:data
-//         })
-//     } catch (error) {
-//         console.log("error ",error)
-//         dispatch({type:GET_USER_PROFILE_FAILURE, payload:error.message})
-//     }
-// }
